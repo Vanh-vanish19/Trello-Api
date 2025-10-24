@@ -7,12 +7,13 @@
 import express from 'express'
 import exitHook from 'exit-hook'
 import { CONNECT_DB, GET_DB, CLOSE_DB } from '~/config/mongodb.js'
+import { env } from '~/config/environment'
 
 const startServer = () => {
   const app = express()
 
-  const hostname = 'localhost'
-  const port = 8017
+  const hostname = env.APP_HOST
+  const port = env.APP_PORT
 
   app.get('/', (req, res) => {
     // Test Absolute import mapOrder
@@ -20,7 +21,7 @@ const startServer = () => {
   })
 
   app.listen(port, hostname, () => {
-    console.log(`Hello Vanish, I am running at ${ hostname }:${ port }/`)
+    console.log(`Hello ${ env.AUTHOR }, I am running at ${ hostname }:${ port }/`)
   })
 
   exitHook( () => {

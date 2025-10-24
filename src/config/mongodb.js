@@ -4,16 +4,12 @@
  * "A bit of fragrance clings to the hand that gives flowers!"
  */
 
-
-const MONGODB_URI = 'mongodb+srv://vanishadmin:W8njoin6KTOHJO3X@clustervanish.gmoqtvc.mongodb.net/?retryWrites=true&w=majority&appName=ClusterVanish'
-
-const DB_NAME = 'trello-vanish'
-
 import { MongoClient, ServerApiVersion } from 'mongodb'
+import { env } from '~/config/environment'
 
 let trelloDBInstance = null
 
-const clientInstance = new MongoClient( MONGODB_URI, {
+const clientInstance = new MongoClient( env.MONGDODB_URI, {
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,
@@ -23,7 +19,8 @@ const clientInstance = new MongoClient( MONGODB_URI, {
 
 export const CONNECT_DB = async () => {
   await clientInstance.connect()
-  trelloDBInstance = clientInstance.db( DB_NAME )
+  console.log('MongoDB connected !')
+  trelloDBInstance = clientInstance.db( env.DATABASE_NAME )
 }
 
 export const GET_DB = () => {
