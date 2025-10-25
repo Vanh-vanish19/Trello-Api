@@ -6,15 +6,13 @@
 
 import express from 'express'
 import { StatusCodes } from 'http-status-codes'
-
+import { boardValidations } from '~/validations/boardValidations'
 const Router = express.Router()
 
 Router.route('/')
   .get(( req, res ) => {
-    res.status(StatusCodes.OK).json({ message : 'Board route works', status: StatusCodes.OK })
+    res.status(StatusCodes.OK).json({ message : 'Post form validation Board route works', status: StatusCodes.OK })
   })
-  .post(( req, res ) => {
-    res.status(StatusCodes.CREATED).json({ message : 'Board created', status: StatusCodes.CREATED })
-  })
+  .post(boardValidations.createNew)
 
 export const boardRoutes = Router

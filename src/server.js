@@ -9,9 +9,10 @@ import exitHook from 'exit-hook'
 import { CONNECT_DB, GET_DB, CLOSE_DB } from '~/config/mongodb.js'
 import { env } from '~/config/environment'
 import { APIs_V1 } from '~/routes/v1'
-import { StatusCodes} from 'http-status-codes'
+
 const startServer = () => {
   const app = express()
+  app.use( express.json())
   app.use('/v1', APIs_V1)
   const hostname = env.APP_HOST
   const port = env.APP_PORT
