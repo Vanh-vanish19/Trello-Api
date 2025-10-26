@@ -1,9 +1,3 @@
-/**
- * Updated by trungquandev.com's author on August 17 2023
- * YouTube: https://youtube.com/@trungquandev
- * "A bit of fragrance clings to the hand that gives flowers!"
- */
-
 import Joi from 'joi'
 import { StatusCodes } from 'http-status-codes'
 
@@ -24,13 +18,13 @@ const createNew = async(req, res, next) => {
     })
   })
   try {
-    console.log(req.body)
+    // abortEarly: false => hien thi tat ca loi
     await correctCondition.validateAsync(req.body, { abortEarly : false })
-    //next()
-    res.status(StatusCodes.CREATED).json({ message : 'Post Board created', status: StatusCodes.CREATED })
+    // valitdate data sau do thi req sang controller
+    next()
   }
   catch (err) {
-    console.log(err)
+    //console.log(err)
     res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
       errors : new Error(err).message
     })

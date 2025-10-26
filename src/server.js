@@ -1,9 +1,3 @@
-/**
- * Updated by trungquandev.com's author on August 17 2023
- * YouTube: https://youtube.com/@trungquandev
- * "A bit of fragrance clings to the hand that gives flowers!"
- * eslint-disable-next-line no-console
- */
 import express from 'express'
 import exitHook from 'exit-hook'
 import { CONNECT_DB, GET_DB, CLOSE_DB } from '~/config/mongodb.js'
@@ -12,7 +6,8 @@ import { APIs_V1 } from '~/routes/v1'
 
 const startServer = () => {
   const app = express()
-  app.use( express.json())
+  //endable parsing json data in request body
+  app.use( express.json() )
   app.use('/v1', APIs_V1)
   const hostname = env.APP_HOST
   const port = env.APP_PORT
