@@ -1,6 +1,6 @@
 import Joi from 'joi'
 import { StatusCodes } from 'http-status-codes'
-
+import ApiError from '~/utils/ApiError'
 const createNew = async(req, res, next) => {
   const correctCondition = Joi.object({
     title: Joi.string().required().min(3).max(50).trim().strict().messages({
@@ -20,14 +20,14 @@ const createNew = async(req, res, next) => {
   try {
     // abortEarly: false => hien thi tat ca loi
     await correctCondition.validateAsync(req.body, { abortEarly : false })
-    // valitdate data sau do thi req sang controller
+    // validate data sau do thi req sang controller
     next()
   }
   catch (err) {
     //console.log(err)
-    res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
-      errors : new Error(err).message
-    })
+    const errorMessages = new Error(err).message
+    const customError = new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, errorMessages)
+    next(customError)
   }
 }
 export const boardValidations = {
