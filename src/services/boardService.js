@@ -1,5 +1,5 @@
-import ApiError from '~/utils/ApiError'
-import {slugify} from '~/utils/fommaters'
+//import ApiError from '~/utils/ApiError'
+import { slugify } from '~/utils/fommaters'
 const createNew = async(reqBody) => {
   // eslint-disable-next-line no-useless-catch
   try {
@@ -11,6 +11,7 @@ const createNew = async(reqBody) => {
     // goi model de luu vao db
     // xu ly email
     // xu ly notify
+    // return kq ve service
     return newBoard
   } catch (err) {
     throw err
