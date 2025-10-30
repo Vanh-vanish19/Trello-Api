@@ -1,8 +1,8 @@
 import { StatusCodes } from 'http-status-codes'
-import ApiError from '~/utils/ApiError'
+//import ApiError from '~/utils/ApiError'
 import { boardService } from '~/services/boardService.js'
 
-const createNew = async(req, res, next ) =>{
+const createNew = async(req, res, next ) => {
   try {
     // route huong du lieu sang service xu ly
     const createBoard = await boardService.createNew(req.body)
@@ -11,6 +11,16 @@ const createNew = async(req, res, next ) =>{
     next(err)
   }
 }
+
+const getDetails = async (req, res, next ) => {
+  try {
+    const board = await boardService.getDetails(req.params.id)
+    res.status(StatusCodes.OK).json(board)
+  } catch (err) {
+    next(err)
+  }
+}
 export const boardController = {
-  createNew
+  createNew,
+  getDetails
 }
