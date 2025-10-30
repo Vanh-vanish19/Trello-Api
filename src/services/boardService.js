@@ -10,14 +10,11 @@ const createNew = async(reqBody) => {
       slug: slugify(reqBody.title)
     }
     const createdBoard = await boardModel.createNew(newBoard)
-    console.log('Created Board: ', createdBoard)
-
     const getNewBoard = await boardModel.findOneById(createdBoard.insertedId)
-    console.log('Get New Board: ', getNewBoard)
     // xu ly email
     // xu ly notify
     // return kq ve service
-    return createdBoard
+    return getNewBoard
   } catch (err) {
     throw err
   }
