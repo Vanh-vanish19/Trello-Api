@@ -3,7 +3,7 @@ import { slugify } from '~/utils/fommaters'
 import { boardModel } from '~/models/boardModel'
 import ApiError from '~/utils/ApiError'
 import { StatusCodes } from 'http-status-codes'
-import { clone, cloneDeep } from 'lodash'
+import { cloneDeep } from 'lodash'
 const createNew = async(reqBody) => {
   // eslint-disable-next-line no-useless-catch
   try {
