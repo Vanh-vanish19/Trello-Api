@@ -1,6 +1,7 @@
 import Joi from 'joi'
 import { StatusCodes } from 'http-status-codes'
 import ApiError from '~/utils/ApiError'
+import { BOARD_TYPES } from '~/utils/constants'
 const createNew = async(req, res, next) => {
   const correctCondition = Joi.object({
     title: Joi.string().required().min(3).max(50).trim().strict().messages({
@@ -15,7 +16,8 @@ const createNew = async(req, res, next) => {
       'string.empty': 'Description is required',
       'string.min': 'Description must be at least 3 characters long',
       'string.max': 'Description must be at most 256 characters long'
-    })
+    }),
+    type : Joi.string().valid(BOARD_TYPES.PUBLIC, BOARD_TYPES.PRIVATE).required()
   })
   try {
     // abortEarly: false => hien thi tat ca loi
