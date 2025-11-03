@@ -9,7 +9,7 @@ import { env } from '~/config/environment'
 
 let trelloDBInstance = null
 
-const clientInstance = new MongoClient( env.MONGDODB_URI, {
+const clientInstance = new MongoClient( env.MONGODB_URI, {
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,
