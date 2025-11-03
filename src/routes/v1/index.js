@@ -1,18 +1,19 @@
-/**
- * Updated by trungquandev.com's author on August 17 2023
- * YouTube: https://youtube.com/@trungquandev
- * "A bit of fragrance clings to the hand that gives flowers!"
- */
 import express from 'express'
 import { StatusCodes } from 'http-status-codes'
 import { boardRoutes } from './boardRoutes.js'
+import { columnRoutes } from './columnRoutes.js'
+import { cardRoutes } from './cardRoutes.js'
 
 const Router = express.Router()
 
 Router.get('/status', (req, res) => {
   res.status(StatusCodes.OK).json({ message : 'Apis_v1 are ready', status: StatusCodes.OK })
 })
-
+//boardAPI
 Router.use('/boards', boardRoutes)
+//columnApi
+Router.use('/columns', columnRoutes)
+//cardApi
+Router.use('/cards', cardRoutes)
 
 export const APIs_V1 = Router

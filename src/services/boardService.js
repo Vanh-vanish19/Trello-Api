@@ -1,5 +1,5 @@
 //import ApiError from '~/utils/ApiError'
-import { slugify } from '~/utils/fommaters'
+import { slugify } from '~/utils/formatters'
 import { boardModel } from '~/models/boardModel'
 import ApiError from '~/utils/ApiError'
 import { StatusCodes } from 'http-status-codes'

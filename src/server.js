@@ -39,6 +39,7 @@ const startServer = () => {
     startServer()
   }
   catch (err) {
-    process.exit(0)
+    console.error('Error connecting to MongoDB:', err)
+    process.exit(1)
   }
 })()
