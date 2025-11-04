@@ -36,9 +36,9 @@ const validateBeforeCreate = async (data) => {
 }
 const createNew = async (data) => {
   try {
-    const valitdata = await validateBeforeCreate(data)
-    //console.log(valitdata)
-    const createdBoard = await GET_DB().collection(BOARD_COLLECTION_NAME).insertOne(valitdata)
+    const validData = await validateBeforeCreate(data)
+    //console.log(validData)
+    const createdBoard = await GET_DB().collection(BOARD_COLLECTION_NAME).insertOne(validData)
     return createdBoard
   } catch (error) {throw new Error(error)}
 }
@@ -67,11 +67,26 @@ const getDetails = async (id) => {
     return result[0] || null
   } catch (error) {throw new Error(error)}
 }
+// push value columnId vao mang
+const pushColumnOrderIds = async (column) => {
+  try {
+    const result = await GET_DB().collection(BOARD_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(column.boardId) },
+      { $push: { columnOrderIds: new ObjectId(column._id) } },
+      { returnDocument: 'after' }
+    )
+    return result.value || null
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
 
 export const boardModel = {
   BOARD_COLLECTION_NAME,
   BOARD_COLLECTION_SCHEMA,
   createNew,
   findOneById,
-  getDetails
+  getDetails,
+  pushColumnOrderIds
 }
