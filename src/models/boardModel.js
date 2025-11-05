@@ -7,7 +7,6 @@ import { columnModel } from './columnModel'
 import { cardModel } from './cardModel'
 
 // define collection
-
 const BOARD_COLLECTION_NAME = 'boards'
 
 const BOARD_COLLECTION_SCHEMA = Joi.object({
@@ -23,6 +22,8 @@ const BOARD_COLLECTION_SCHEMA = Joi.object({
   _destroy: Joi.boolean().default(false)
 
 })
+
+const INVALID_UPDATE_FIELD = ['_id', 'createdAt']
 
 const findOneById = async (id) => {
   try {
@@ -75,7 +76,24 @@ const pushColumnOrderIds = async (column) => {
       { $push: { columnOrderIds: new ObjectId(column._id) } },
       { returnDocument: 'after' }
     )
-    return result.value || null
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+const update = async (boardId, updateData) => {
+  try {
+    Object.keys(updateData).forEach(fieldName => {
+      if (INVALID_UPDATE_FIELD.includes(fieldName)) {
+        delete updateData[fieldName]
+      }
+    })
+    const result = await GET_DB().collection(BOARD_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(boardId) },
+      { $set: updateData },
+      { returnDocument: 'after' }
+    )
+    return result
   } catch (error) {
     throw new Error(error)
   }
@@ -88,5 +106,6 @@ export const boardModel = {
   createNew,
   findOneById,
   getDetails,
-  pushColumnOrderIds
+  pushColumnOrderIds,
+  update
 }
