@@ -93,6 +93,7 @@ const update = async (boardId, updateData) => {
       { $set: updateData },
       { returnDocument: 'after' }
     )
+    // console.log(result)
     return result
   } catch (error) {
     throw new Error(error)
