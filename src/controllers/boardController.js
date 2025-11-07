@@ -30,8 +30,18 @@ const update = async (req, res, next ) => {
   }
 }
 
+const moveCardDiffCol = async (req, res, next ) => {
+  try {
+    const updateBoard = await boardService.moveCardDiffCol(req.body)
+    res.status(StatusCodes.OK).json(updateBoard)
+  } catch (err) {
+    next(err)
+  }
+}
+
 export const boardController = {
   createNew,
   getDetails,
-  update
+  update,
+  moveCardDiffCol
 }
