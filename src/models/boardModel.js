@@ -88,12 +88,14 @@ const update = async (boardId, updateData) => {
         delete updateData[fieldName]
       }
     })
+    if (updateData.columnOrderIds) {
+      updateData.columnOrderIds = updateData.columnOrderIds.map(_id => new ObjectId(_id) )
+    }
     const result = await GET_DB().collection(BOARD_COLLECTION_NAME).findOneAndUpdate(
       { _id: new ObjectId(boardId) },
       { $set: updateData },
       { returnDocument: 'after' }
     )
-    // console.log(result)
     return result
   } catch (error) {
     throw new Error(error)

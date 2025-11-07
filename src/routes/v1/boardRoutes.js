@@ -10,6 +10,9 @@ Router.route('/')
   })
   .post(boardValidation.createNew, boardController.createNew)
 
+Router.route('/supports/moving_card')
+  .put(boardValidation.moveCardDiffCol, boardController.moveCardDiffCol)
+
 Router.route('/:id')
   .get(boardController.getDetails)
   .put(boardValidation.update, boardController.update)

@@ -1,6 +1,8 @@
 //import ApiError from '~/utils/ApiError'
 import { slugify } from '~/utils/formatters'
 import { boardModel } from '~/models/boardModel'
+import { columnModel } from '~/models/columnModel'
+import { cardModel } from '~/models/cardModel'
 import ApiError from '~/utils/ApiError'
 import { StatusCodes } from 'http-status-codes'
 import { cloneDeep } from 'lodash'
@@ -35,7 +37,7 @@ const getDetails = async (boardId) => {
     cloneBoard.columns.forEach(column => {
       //equals mongoDB
       column.cards = cloneBoard.cards.filter(card => card.columnId.equals(column._id))
-      //column.cards = cloneBoard.cards.filter(card => card.columnId.toString() === column._id.toString())
+      // column.cards = cloneBoard.cards.filter(card => card.columnId.toString() === column._id.toString())
     })
 
     delete cloneBoard.cards
@@ -59,8 +61,38 @@ const update = async (boardId, reqBody) => {
   }
 }
 
+const moveCardDiffCol = async (reqBody) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    // cập nhật mảng cardsOrderIds của column ban đầu chứa nó (xóa _id của card)
+    await columnModel.update(reqBody.prevColumnId,
+      {
+        cardOrderIds: reqBody.prevCardOrderIds,
+        updatedAt: Date.now()
+      }
+    )
+    // cập nhật cardsOrderIds của column kéo đến ( thêm _id của cards)
+    await columnModel.update(reqBody.nextColumnId,
+      {
+        cardOrderIds: reqBody.nextCardOrderIds,
+        updatedAt: Date.now()
+      }
+    )
+    // cập nhật lại columnId của card đã kéo
+    await cardModel.update(reqBody.currentCardId,
+      {
+        columnId: reqBody.nextColumnId
+      }
+    )
+    return { updateResult: 'success' }
+  } catch (err) {
+    throw err
+  }
+}
+
 export const boardService = {
   createNew,
   getDetails,
-  update
+  update,
+  moveCardDiffCol
 }
