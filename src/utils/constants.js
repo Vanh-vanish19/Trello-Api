@@ -1,6 +1,6 @@
 export const WHITELIST_DOMAINS = [
   // 'http://localhost:5173'
-  //..vv
+  'https://trello-web-puce-mu.vercel.app/'
 ]
 
 export const BOARD_TYPES = {
