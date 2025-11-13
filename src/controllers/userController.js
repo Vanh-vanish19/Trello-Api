@@ -12,6 +12,28 @@ const createNew = async(req, res, next ) => {
   }
 }
 
+const verifyAccount = async(req, res, next ) => {
+  try {
+    // route huong du lieu sang service xu ly
+    const result = await userService.verifyAccount(req.body)
+    res.status(StatusCodes.OK).json(result)
+  } catch (err) {
+    next(err)
+  }
+}
+
+const login = async(req, res, next ) => {
+  try {
+    // route huong du lieu sang service xu ly
+    const result = await userService.login(req.body)
+    res.status(StatusCodes.OK).json(result)
+  } catch (err) {
+    next(err)
+  }
+}
+
 export const userController = {
-  createNew
+  createNew,
+  verifyAccount,
+  login
 }
