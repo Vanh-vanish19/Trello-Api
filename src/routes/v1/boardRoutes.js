@@ -2,18 +2,20 @@ import express from 'express'
 import { StatusCodes } from 'http-status-codes'
 import { boardValidation } from '~/validations/boardValidation'
 import { boardController } from '~/controllers/boardController'
+import { authMiddleware } from '~/middlewares/authMiddlewares'
+
 const Router = express.Router()
 
 Router.route('/')
-  .get(( req, res ) => {
+  .get(authMiddleware.isAuthorize, ( req, res ) => {
     res.status(StatusCodes.OK).json({ message : 'Board route works', status: StatusCodes.OK })
   })
-  .post(boardValidation.createNew, boardController.createNew)
+  .post(authMiddleware.isAuthorize, boardValidation.createNew, boardController.createNew)
 
 Router.route('/supports/moving_card')
-  .put(boardValidation.moveCardDiffCol, boardController.moveCardDiffCol)
+  .put(authMiddleware.isAuthorize, boardValidation.moveCardDiffCol, boardController.moveCardDiffCol)
 
 Router.route('/:id')
-  .get(boardController.getDetails)
-  .put(boardValidation.update, boardController.update)
+  .get(authMiddleware.isAuthorize, boardController.getDetails)
+  .put(authMiddleware.isAuthorize, boardValidation.update, boardController.update)
 export const boardRoutes = Router

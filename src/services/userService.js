@@ -114,13 +114,13 @@ const login = async(reqBody) => {
       env.ACCESS_TOKEN_LIFE
     )
 
-    const verifyToken = await tokenProvider.generateToken(userInfo,
+    const refreshToken = await tokenProvider.generateToken(userInfo,
       env.REFRESH_TOKEN_SECRET_SIGNATURE,
       env.REFRESH_TOKEN_LIFE
     )
     return {
       accessToken,
-      verifyToken,
+      refreshToken,
       ...pickUser(existUser)
     }
   } catch (error) {
