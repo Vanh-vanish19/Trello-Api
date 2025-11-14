@@ -128,9 +128,31 @@ const login = async(reqBody) => {
   }
 }
 
+const refreshToken = async(clientRefreshToken) => {
+  try {
+    // giải mã refresh token cớ hợp lệ không
+    const refreshTokenDecoded = await tokenProvider.verifyToken(clientRefreshToken, env.REFRESH_TOKEN_SECRET_SIGNATURE)
+
+    const userInfo = {
+      _id: refreshTokenDecoded._id,
+      email: refreshTokenDecoded.email
+    }
+    // tạo 2 token, accessToken và refreshToken trả về Fe
+    const accessToken = await tokenProvider.generateToken(
+      userInfo,
+      env.ACCESS_TOKEN_SECRET_SIGNATURE,
+      env.ACCESS_TOKEN_LIFE
+    )
+    return { accessToken }
+  } catch (error) {
+    throw Error(error)
+  }
+}
+
 
 export const userService = {
   createNew,
   verifyAccount,
-  login
+  login,
+  refreshToken
 }
