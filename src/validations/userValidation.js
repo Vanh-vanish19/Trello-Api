@@ -50,9 +50,28 @@ const verifyAccount = async(req, res, next) => {
   }
 }
 
+const update = async(req, res, next) => {
+  const correctCondition = Joi.object({
+    displayName : Joi.string().min(3).max(50).trim().strict(),
+    current_password: Joi.string().pattern(PASSWORD_RULE).message(PASSWORD_RULE_MESSAGE),
+    new_password: Joi.string().pattern(PASSWORD_RULE).message(PASSWORD_RULE_MESSAGE)
+  })
+  try {
+    await correctCondition.validateAsync(req.body, { abortEarly : false })
+    next()
+  }
+  catch (err) {
+    const errorMessages = new Error(err).message
+    const customError = new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, errorMessages)
+    next(customError)
+  }
+}
+
+
 export const userValidation = {
   createNew,
   login,
-  verifyAccount
+  verifyAccount,
+  update
 }
 
