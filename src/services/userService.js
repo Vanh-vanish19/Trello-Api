@@ -8,6 +8,7 @@ import { WEBSITE_DOMAIN } from '~/utils/constants'
 import { BrevoProvider } from '~/providers/BrevoProvider'
 import { tokenProvider } from '~/providers/JwtProvider'
 import { env } from '~/config/environment'
+import { CloudinaryProvider } from '~/providers/CloudinaryProvider'
 
 const createNew = async(reqBody) => {
   // eslint-disable-next-line no-useless-catch
@@ -152,7 +153,7 @@ const refreshToken = async(clientRefreshToken) => {
   }
 }
 
-const update = async(userId, reqBody) => {
+const update = async(userId, reqBody, userAvtFile) => {
   try {
     // query user để kiểm tra
     const existUser = await userModel.findOneById(userId)
@@ -168,6 +169,13 @@ const update = async(userId, reqBody) => {
       }
       updatedUser = await userModel.update(userId, {
         password: bcryptjs.hashSync(reqBody.new_password, 8)
+      })
+    }
+    else if (userAvtFile) {
+      // upload file lên cloudinary
+      const result = await CloudinaryProvider.streamUpload(userAvtFile.buffer, 'users')
+      updatedUser = await userModel.update(userId, {
+        avatar: result.secure_url
       })
     }
     else {
