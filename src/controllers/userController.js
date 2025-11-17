@@ -72,10 +72,12 @@ const refreshToken = async(req, res, next ) => {
 const update = async(req, res, next ) => {
   try {
     const userId = req.jwtDecoded._id
-    const result = await userService.update(userId, req.body)
+    const userAvtFile = req.file
+    console.log('userAvtFile', userAvtFile)
+    const result = await userService.update(userId, req.body, userAvtFile)
     res.status(StatusCodes.OK).json(result)
   } catch (err) {
-    next(new ApiError(StatusCodes.FORBIDDEN, 'Please sign in !'))
+    next(err)
   }
 }
 
