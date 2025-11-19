@@ -6,6 +6,7 @@ import { cardModel } from '~/models/cardModel'
 import ApiError from '~/utils/ApiError'
 import { StatusCodes } from 'http-status-codes'
 import { cloneDeep } from 'lodash'
+import { DEFAULT_PAGE, DEFAULT_ITEMS_PER_PAGE } from '~/utils/constants'
 const createNew = async(reqBody) => {
   // eslint-disable-next-line no-useless-catch
   try {
@@ -90,9 +91,22 @@ const moveCardDiffCol = async (reqBody) => {
   }
 }
 
+
+const getBoards = async (userId, page, itemsPerPage) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    if (!page) page = DEFAULT_PAGE
+    if (!itemsPerPage) itemsPerPage = DEFAULT_ITEMS_PER_PAGE
+    const result = await boardModel.getBoards(userId, parseInt(page, 10), parseInt(itemsPerPage, 10))
+    return result
+  } catch (err) {
+    throw err
+  }
+}
 export const boardService = {
   createNew,
   getDetails,
   update,
-  moveCardDiffCol
+  moveCardDiffCol,
+  getBoards
 }
