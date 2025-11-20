@@ -162,7 +162,6 @@ const getBoards = async (userId, page, itemsPerPage) => {
         'queryTotalBoards' : [{ $count: 'countedAllBoards' }]
       } }
     ], { collation : { locale: 'en' } }).toArray()
-    console.log('query', query)
     const res = query[0]
 
     return {
