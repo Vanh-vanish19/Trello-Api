@@ -1,6 +1,7 @@
 //import ApiError from '~/utils/ApiError'
 import { cardModel } from '~/models/cardModel'
 import { columnModel } from '~/models/columnModel'
+import { CloudinaryProvider } from '~/providers/CloudinaryProvider'
 const createNew = async(reqBody) => {
   // eslint-disable-next-line no-useless-catch
   try {
@@ -20,14 +21,23 @@ const createNew = async(reqBody) => {
   }
 }
 
-const update = async (cardId, reqBody) => {
+const update = async (cardId, reqBody, cardCoverFile ) => {
   // eslint-disable-next-line no-useless-catch
   try {
     const updateData = {
       ...reqBody,
       updatedAt: Date.now()
     }
-    const updatedCard = await cardModel.update(cardId, updateData)
+    let updatedCard = {}
+    if (cardCoverFile) {
+      const result = await CloudinaryProvider.streamUpload(cardCoverFile.buffer, 'card-cover')
+      updatedCard = await cardModel.update(cardId, {
+        cover: result.secure_url
+      })
+    }
+    else {
+      updatedCard = await cardModel.update(cardId, updateData)
+    }
     return updatedCard
   } catch (err) {
     throw err
