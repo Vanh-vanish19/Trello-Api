@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import { userModel } from '~/models/userModel'
 import { boardModel } from '~/models/boardModel'
 import ApiError from '~/utils/ApiError'
@@ -44,6 +45,25 @@ const createNewBoardInvitation = async(reqBody, inviterId) => {
   }
 }
 
+const getInvitations = async(reqBody, userId) => {
+  try {
+    const getInvitations = await invitationModel.findByUser(userId)
+
+    const resInvitations = getInvitations.map(i => {
+      return {
+        ...i,
+        inviter: i.inviter[0] || {},
+        invitee: i.invitee[0] || {},
+        board: i.board[0] || {}
+      }
+    })
+    return resInvitations
+  } catch (err) {
+    throw err
+  }
+}
+
 export const invitationService = {
-  createNewBoardInvitation
+  createNewBoardInvitation,
+  getInvitations
 }
