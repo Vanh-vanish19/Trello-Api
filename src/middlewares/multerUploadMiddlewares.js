@@ -6,7 +6,6 @@ import { StatusCodes } from 'http-status-codes'
 
 //func check file được chấp nhận
 const customFileFilter = (req, file, cb) => {
-  console.log('multer file', file)
   // đối với multer kiểm tra file thì sử dụng mimetype
   if (!ALLOW_COMMON_FILE_TYPES.includes(file.mimetype)) {
     const errMessage = 'File type is invalid. Only accept jpg, jpeg and png'
