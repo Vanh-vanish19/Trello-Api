@@ -7,6 +7,9 @@ import { APIs_V1 } from '~/routes/v1'
 import { errorHandlingMiddleware } from '~/middlewares/errorHandlingMiddlewares.js'
 import { corsOptions } from './config/cors'
 import cookieParser from 'cookie-parser'
+import socketIo from 'socket.io'
+import http from 'http'
+import { inviteUserToBoardSocket } from './sockets/inviteUserToBoardSocket'
 
 
 const startServer = () => {
@@ -26,18 +29,20 @@ const startServer = () => {
   //middleware xu ly loi tap trung
   app.use( errorHandlingMiddleware )
 
-  app.get('/', (req, res) => {
-    // Test Absolute import mapOrder
-    res.end('<h1>Hello World!</h1><hr>')
+  // tao server moi de boc app express de lam realtime
+  const server = http.createServer(app)
+  const io = socketIo(server, { cors: corsOptions })
+  io.on('connection', (socket) => {
+    inviteUserToBoardSocket(socket)
   })
 
   if (env.BUILD_MODE === 'production') {
-    app.listen(process.env.PORT, () => {
+    server.listen(process.env.PORT, () => {
       console.log(`Hello ${ env.AUTHOR }, I am running at ${ process.env.PORT }/`)
     })
   }
   else {
-    app.listen(env.LOCAL_DEV_APP_PORT, env.LOCAL_DEV_APP_HOST, () => {
+    server.listen(env.LOCAL_DEV_APP_PORT, env.LOCAL_DEV_APP_HOST, () => {
       console.log(`Local Dev Hello ${ env.AUTHOR }, I am running at ${ env.LOCAL_DEV_APP_HOST }:${ env.LOCAL_DEV_APP_PORT }/`)
     })
   }
