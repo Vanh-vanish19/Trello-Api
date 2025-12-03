@@ -3,6 +3,7 @@ import { ObjectId } from 'mongodb'
 import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validators'
 import { EMAIL_RULE, EMAIL_RULE_MESSAGE } from '~/utils/validators'
 import { GET_DB } from '~/config/mongodb'
+import { CARD_MEMBER_ACTION } from '~/utils/constants'
 // Define Collection (name & schema)
 const CARD_COLLECTION_NAME = 'cards'
 const CARD_COLLECTION_SCHEMA = Joi.object({
@@ -17,6 +18,7 @@ const CARD_COLLECTION_SCHEMA = Joi.object({
   ).default([]),
 
   comments: Joi.array().items({
+    _id: Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
     userId: Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
     userEmail:  Joi.string().pattern(EMAIL_RULE).message(EMAIL_RULE_MESSAGE),
     userDisplayName: Joi.string().min(3).max(50).trim().strict(),
@@ -86,9 +88,16 @@ const deleteManyById = async (columnId) => {
 
 const unshiftNewComment = async (cardId, commentData) => {
   try {
+    // Always assign an _id to subdocument comments
+    commentData._id = new ObjectId().toString()
+    const newCommentData = {
+      ...commentData,
+      _id: commentData._id,
+      commentedAt: Date.now()
+    }
     const result = await GET_DB().collection(CARD_COLLECTION_NAME).findOneAndUpdate(
       { _id: new ObjectId(cardId) },
-      { $push: { comments: { $each: [commentData], $position: 0 } } },
+      { $push: { comments: { $each: [newCommentData], $position: 0 } } },
       { returnDocument: 'after' }
     )
     return result
@@ -98,6 +107,32 @@ const unshiftNewComment = async (cardId, commentData) => {
   }
 }
 
+const updateMember = async (cardId, incomingMemberInfo) => {
+  try {
+    let updateCondition = {}
+
+    if (incomingMemberInfo.action === CARD_MEMBER_ACTION.ADD) {
+      updateCondition = {
+        $push: { memberIds: new ObjectId(incomingMemberInfo.userId) }
+      }
+    }
+
+    if (incomingMemberInfo.action === CARD_MEMBER_ACTION.REMOVE) {
+      updateCondition = {
+        $pull: { memberIds: new ObjectId(incomingMemberInfo.userId) }
+      }
+    }
+    const result = await GET_DB().collection(CARD_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(cardId) },
+      updateCondition,
+      { returnDocument: 'after' }
+    )
+
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
 
 export const cardModel = {
   CARD_COLLECTION_NAME,
@@ -106,5 +141,6 @@ export const cardModel = {
   findOneById,
   update,
   deleteManyById,
-  unshiftNewComment
+  unshiftNewComment,
+  updateMember
 }
