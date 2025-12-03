@@ -134,6 +134,36 @@ const updateMember = async (cardId, incomingMemberInfo) => {
   }
 }
 
+const deleteComment = async (cardId, commentId) => {
+  try {
+    const result = await GET_DB().collection(CARD_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(cardId) },
+      { $pull: { comments: { _id: commentId } } },
+      { returnDocument: 'after' }
+    )
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+const editComment = async (cardId, commentId, newContent) => {
+  try {
+    const newContentData = {
+      'comments.$.content': newContent,
+      'comments.$.commentedAt': Date.now()
+    }
+    const result = await GET_DB().collection(CARD_COLLECTION_NAME).findOneAndUpdate(
+      { _id : new ObjectId(cardId), 'comments._id': commentId },
+      { $set: newContentData },
+      { returnDocument: 'after' }
+    )
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
 export const cardModel = {
   CARD_COLLECTION_NAME,
   CARD_COLLECTION_SCHEMA,
@@ -142,5 +172,7 @@ export const cardModel = {
   update,
   deleteManyById,
   unshiftNewComment,
-  updateMember
+  updateMember,
+  deleteComment,
+  editComment
 }
