@@ -48,6 +48,12 @@ const update = async (cardId, reqBody, cardCoverFile, userInfo ) => {
     else if ( updateData.incomingMemberInfo ) {
       updatedCard = await cardModel.updateMember(cardId, updateData.incomingMemberInfo)
     }
+    else if (updateData.commentToDelete) {
+      updatedCard = await cardModel.deleteComment(cardId, updateData.commentToDelete)
+    }
+    else if (updateData.commentToEdit) {
+      updatedCard = await cardModel.editComment(cardId, updateData.commentToEdit, updateData.content)
+    }
     else {
       updatedCard = await cardModel.update(cardId, updateData)
     }
