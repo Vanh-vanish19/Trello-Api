@@ -152,7 +152,7 @@ const update = async (boardId, updateData) => {
 }
 
 
-const getBoards = async (userId, page, itemsPerPage) => {
+const getBoards = async (userId, page, itemsPerPage, queryFilters) => {
   try {
     const queryConditions = [
       // dk 1: board chua bi xoa
@@ -163,6 +163,15 @@ const getBoards = async (userId, page, itemsPerPage) => {
         { memberIds : { $all: [new ObjectId(userId)] } }
       ] }
     ]
+    // xu ly query filter search board theo title
+    if ( queryFilters ) {
+      Object.keys(queryFilters).forEach( key => {
+        // queryConditions.push({ [key]: { $regex : queryFilters[key] } })
+
+        queryConditions.push({ [key]: { $regex : new RegExp(queryFilters[key], 'i') } })
+      })
+    }
+
     const query = await GET_DB().collection(BOARD_COLLECTION_NAME).aggregate([
       { $match: { $and: queryConditions } },
       { $sort: { title : 1 } },
@@ -173,7 +182,6 @@ const getBoards = async (userId, page, itemsPerPage) => {
           { $skip: pagingSkipValue(page, itemsPerPage) }, // bỏ qua số lượng bản ghi của các trang trước đó
           { $limit: itemsPerPage }
         ],
-        // luong 2 query tong so luong ban ghi board
         'queryTotalBoards' : [{ $count: 'countedAllBoards' }]
       } }
     ], { collation : { locale: 'en' } }).toArray()
